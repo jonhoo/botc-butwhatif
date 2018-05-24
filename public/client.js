@@ -11,10 +11,17 @@
 		caseForm.classList.remove("loading");
 		caseList.classList.remove("loading");
 
+		const re = new RegExp('(' +
+			caseQuery.value.split(/,/).map(function(tag) {
+				return tag.toLowerCase().trim().replace(/[^a-z0-9]/g, "[^a-z0-9]?") + '(s|ed)?';
+			})
+			.join("|") +
+			')', 'gi');
+
 		// iterate through every dream and add it to our page
 		cases.forEach( function(c) {
 			const one = document.createElement('article');
-			one.innerHTML = '<p>' + c.explanation + '</p>';
+			one.innerHTML = '<p>' + c.explanation.replace(re, '<strong>$1</strong>') + '</p>';
 
 			const oneup = document.createElement('a');
 			oneup.classList.add('good');
