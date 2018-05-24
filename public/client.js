@@ -26,7 +26,7 @@
 				oneup.classList.add('voted');
 
 				const cases = new XMLHttpRequest();
-				cases.open('POST', '/helpful', true);
+				cases.open('POST', 'helpful', true);
 				cases.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				cases.send("id=" + encodeURIComponent(c.id));
 			});
@@ -53,7 +53,7 @@
 		// get dream value and add it to the list
 		const cases = new XMLHttpRequest();
 		cases.onload = onCases;
-		cases.open('POST', '/cases', true);
+		cases.open('POST', 'cases', true);
 		cases.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		cases.send("query=" + encodeURIComponent(caseQuery.value));
 	};
