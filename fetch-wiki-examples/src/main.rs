@@ -1,3 +1,4 @@
+extern crate cli_agenda;
 extern crate regex;
 extern crate reqwest;
 extern crate rusqlite;
@@ -12,9 +13,14 @@ const KEYWORDS: &[&str] = &[
     "minion",
     "demon",
     "drunk",
+    "sober",
     "poison",
     "red herring",
     "nominate",
+    "nomination",
+    "execute",
+    "execution",
+    "alive",
     "vote",
     "register",
     "storyteller",
@@ -25,6 +31,15 @@ const KEYWORDS: &[&str] = &[
     "night",
     "day",
     "1st",
+    "final",
+    "first",
+    "private",
+    "game end",
+    "false",
+    "twins",
+    "good twin",
+    "traveller",
+    "exile",
 ];
 
 fn main() {
@@ -35,24 +50,34 @@ fn main() {
     let simplify = regex::Regex::new(r#"[^A-Za-z0-9]"#).unwrap();
 
     let db = rusqlite::Connection::open("../.data/sqlite.db").unwrap();
-    db.execute_batch(
-        "DELETE FROM taggings; \
-         DELETE FROM tags; \
-         DELETE FROM cases",
-    ).unwrap();
+    db.execute_batch("DELETE FROM taggings").unwrap();
+    let mut findcase = db
+        .prepare("SELECT id FROM cases WHERE explanation = ?")
+        .unwrap();
     let mut findtag = db.prepare("SELECT id FROM tags WHERE tag = ?").unwrap();
     let mut mktag = db.prepare("INSERT INTO tags (tag) VALUES (?)").unwrap();
-    let mut mkexmpl = db.prepare("INSERT INTO cases (explanation) VALUES (?)")
+    let mut mkexmpl = db
+        .prepare("INSERT INTO cases (explanation) VALUES (?)")
         .unwrap();
-    let mut bind = db.prepare("INSERT INTO taggings (tag_id, case_id) VALUES (?, ?)")
+    let mut bind = db
+        .prepare("INSERT INTO taggings (tag_id, case_id) VALUES (?, ?)")
         .unwrap();
 
-    for edition in &["Trouble_Brewing"] {
+    let mut log = cli_agenda::start();
+    let mut pages = Vec::new();
+    let mut characters = HashMap::new();
+
+    // first, find all characters
+    log = log.enter("Searching wiki for characters");
+    for edition in &["Trouble_Brewing", "Sects_%26_Violets", "Bad_Moon_Rising"] {
         let url = format!("{}/wiki/{}", BASE, edition);
         let text = reqwest::get(&url).unwrap().text().unwrap();
         let page = scraper::Html::parse_document(&text);
+        pages.push((edition, page));
+    }
 
-        let mut characters = HashMap::new();
+    for (edition, page) in &pages {
+        log = log.enter(edition);
         for maybe_character in page.select(&headlines) {
             match maybe_character.value().attr("id") {
                 None => continue,
@@ -77,74 +102,92 @@ fn main() {
                         None => continue,
                     };
 
-                    println!("==> found {} in {}", name, edition);
+                    log.single(format!("found {}", name));
                     characters.insert(name, url);
                 }
                 None => continue,
             }
         }
-
-        let all_of_interest = characters
-            .keys()
-            .map(|s| &**s)
-            .chain(KEYWORDS.into_iter().map(|s| &**s))
-            .fold(String::new(), |mut acc, s| {
-                if acc.is_empty() {
-                    String::from(s)
-                } else {
-                    acc.push_str("|");
-                    acc.push_str(&s);
-                    acc
-                }
-            });
-        let all_of_interest = format!(r#"\b({})(s|ed)?\b"#, all_of_interest);
-        println!("{}", all_of_interest);
-        let all_of_interest = regex::RegexBuilder::new(&all_of_interest)
-            .case_insensitive(true)
-            .build()
-            .unwrap();
-
-        for page in characters.values() {
-            let text = reqwest::get(&format!("{}{}", BASE, page))
-                .unwrap()
-                .text()
-                .unwrap();
-            let page = scraper::Html::parse_document(&text);
-
-            for maybe_example in page.select(&big_boxes) {
-                maybe_example
-                    .select(&para)
-                    .map(|p| {
-                        let text = p.text().fold(String::new(), |mut name, s| {
-                            name.push_str(s);
-                            name
-                        });
-                        let tags: HashSet<_> = all_of_interest
-                            .captures_iter(&text)
-                            .map(|cap| {
-                                simplify
-                                    .replace_all(&cap[1], regex::NoExpand(""))
-                                    .into_owned()
-                                    .to_lowercase()
-                            })
-                            .collect();
-
-                        println!("==> found example:\n\t{}", text);
-                        let example = mkexmpl.insert(&[&text]).unwrap();
-                        for tag in tags {
-                            let tag_id = if let Ok(id) =
-                                findtag.query_row(&[&tag], |row| row.get::<_, i64>(0))
-                            {
-                                id
-                            } else {
-                                mktag.insert(&[&tag]).unwrap()
-                            };
-                            println!(" -> tagged with '{}' ({})", tag, tag_id);
-                            bind.execute(&[&tag_id as &_, &example as &_]).unwrap();
-                        }
-                    })
-                    .count();
-            }
-        }
+        log = log.leave();
     }
+    log = log.leave();
+
+    log = log.enter("Establishing character matching");
+    let all_of_interest = characters
+        .keys()
+        .map(|s| &**s)
+        .chain(KEYWORDS.into_iter().map(|s| &**s))
+        .fold(String::new(), |mut acc, s| {
+            if acc.is_empty() {
+                String::from(s)
+            } else {
+                acc.push_str("|");
+                acc.push_str(&*simplify.replace_all(s, "[^0-9a-zA-Z]"));
+                acc
+            }
+        });
+    let all_of_interest = format!(r#"\b({})(s|e?d|ly)?\b"#, all_of_interest);
+    println!("\n{}", all_of_interest);
+    let all_of_interest = regex::RegexBuilder::new(&all_of_interest)
+        .case_insensitive(true)
+        .build()
+        .unwrap();
+    log = log.leave();
+
+    for (character, page) in &characters {
+        let text = reqwest::get(&format!("{}{}", BASE, page))
+            .unwrap()
+            .text()
+            .unwrap();
+        let page = scraper::Html::parse_document(&text);
+
+        log = log.enter(character);
+        for maybe_example in page.select(&big_boxes) {
+            maybe_example
+                .select(&para)
+                .map(|p| {
+                    let text = p.text().fold(String::new(), |mut name, s| {
+                        name.push_str(s);
+                        name
+                    });
+                    let text = text.trim();
+                    let tags: HashSet<_> = all_of_interest
+                        .captures_iter(&text)
+                        .map(|cap| {
+                            simplify
+                                .replace_all(&cap[1], regex::NoExpand(""))
+                                .into_owned()
+                                .to_lowercase()
+                        })
+                        .collect();
+
+                    log = log.enter("found example");
+                    eprintln!("\n{}\n", text);
+                    let example = match findcase.query_row(&[&text], |row| row.get::<_, i64>(0)) {
+                        Ok(id) => {
+                            log.warn(format!("already exists as {}", id));
+                            id
+                        }
+                        Err(_) => mkexmpl.insert(&[&text]).unwrap(),
+                    };
+
+                    for tag in tags {
+                        let tag_id = if let Ok(id) =
+                            findtag.query_row(&[&tag], |row| row.get::<_, i64>(0))
+                        {
+                            id
+                        } else {
+                            mktag.insert(&[&tag]).unwrap()
+                        };
+                        log.single(format!("tagged with '{}' ({})", tag, tag_id));
+                        bind.execute(&[&tag_id as &_, &example as &_]).unwrap();
+                    }
+                    log = log.leave();
+                })
+                .count();
+        }
+        log = log.leave();
+    }
+
+    // TODO: parse files in examples/
 }
