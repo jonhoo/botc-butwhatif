@@ -1,10 +1,12 @@
 extern crate cli_agenda;
+extern crate glob;
 extern crate regex;
 extern crate reqwest;
 extern crate rusqlite;
 extern crate scraper;
 
 use std::collections::{HashMap, HashSet};
+use std::fs;
 
 const BASE: &str = "http://bloodontheclocktower.com";
 const KEYWORDS: &[&str] = &[
@@ -38,7 +40,7 @@ const KEYWORDS: &[&str] = &[
     "false",
     "twins",
     "good twin",
-    "traveller",
+    "traveler",
     "exile",
 ];
 
@@ -134,6 +136,40 @@ fn main() {
         .unwrap();
     log = log.leave();
 
+    let mut incorporate_example = |log: &mut cli_agenda::Progress, text: &str| {
+        let text = text.trim();
+        let tags: HashSet<_> = all_of_interest
+            .captures_iter(&text)
+            .map(|cap| {
+                simplify
+                    .replace_all(&cap[1], regex::NoExpand(""))
+                    .into_owned()
+                    .to_lowercase()
+            })
+            .collect();
+
+        *log = log.enter("found example");
+        eprintln!("\n{}\n", text);
+        let example = match findcase.query_row(&[&text], |row| row.get::<_, i64>(0)) {
+            Ok(id) => {
+                log.warn(format!("already exists as {}", id));
+                id
+            }
+            Err(_) => mkexmpl.insert(&[&text]).unwrap(),
+        };
+
+        for tag in tags {
+            let tag_id = if let Ok(id) = findtag.query_row(&[&tag], |row| row.get::<_, i64>(0)) {
+                id
+            } else {
+                mktag.insert(&[&tag]).unwrap()
+            };
+            log.single(format!("tagged with '{}' ({})", tag, tag_id));
+            bind.execute(&[&tag_id as &_, &example as &_]).unwrap();
+        }
+        *log = log.leave();
+    };
+
     for (character, page) in &characters {
         let text = reqwest::get(&format!("{}{}", BASE, page))
             .unwrap()
@@ -150,44 +186,24 @@ fn main() {
                         name.push_str(s);
                         name
                     });
-                    let text = text.trim();
-                    let tags: HashSet<_> = all_of_interest
-                        .captures_iter(&text)
-                        .map(|cap| {
-                            simplify
-                                .replace_all(&cap[1], regex::NoExpand(""))
-                                .into_owned()
-                                .to_lowercase()
-                        })
-                        .collect();
-
-                    log = log.enter("found example");
-                    eprintln!("\n{}\n", text);
-                    let example = match findcase.query_row(&[&text], |row| row.get::<_, i64>(0)) {
-                        Ok(id) => {
-                            log.warn(format!("already exists as {}", id));
-                            id
-                        }
-                        Err(_) => mkexmpl.insert(&[&text]).unwrap(),
-                    };
-
-                    for tag in tags {
-                        let tag_id = if let Ok(id) =
-                            findtag.query_row(&[&tag], |row| row.get::<_, i64>(0))
-                        {
-                            id
-                        } else {
-                            mktag.insert(&[&tag]).unwrap()
-                        };
-                        log.single(format!("tagged with '{}' ({})", tag, tag_id));
-                        bind.execute(&[&tag_id as &_, &example as &_]).unwrap();
-                    }
-                    log = log.leave();
+                    incorporate_example(&mut log, &*text);
                 })
                 .count();
         }
         log = log.leave();
     }
 
-    // TODO: parse files in examples/
+    for file in glob::glob("../examples/*.txt").unwrap() {
+        let file = file.unwrap();
+        log = log.enter(file.display());
+        let examples = fs::read_to_string(file).unwrap();
+        for example in examples.split("\n\n\n") {
+            if example.is_empty() {
+                continue;
+            }
+
+            incorporate_example(&mut log, example);
+        }
+        log = log.leave();
+    }
 }

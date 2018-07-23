@@ -1,0 +1,92 @@
+Mark is an Outsider, and is marked as the Evil Twin's good twin. The
+Fang Gu attempts to kill Mark, but instead dies, and makes Mark an evil
+Fang Gu. Mark is now also an evil good twin, and evil wins if he is
+executed.
+
+
+There is a Vortox in play, and the Snake Charmer picks the Flowergirl.
+The Snake Charmer is put back to sleep, and nothing happens.
+
+
+The Pit-Hag creates a good Demon, and the Storyteller kills the old
+Demon that night. The game continues, since a Demon is still alive.
+
+
+The Pit-Hag creates a Demon, and the Storyteller lets the old Demon
+live. The village executes one of the Demons. The game continues, since
+a Demon is still alive.
+
+
+The Snake Charmer is drunk, and chooses a player that is not a Demon.
+The Snake Charmer is shown that they are now the Vortox, but no changes
+are made to the Grimoire. They do not get to act as the Demon that
+night, and are awoken the following night as the Snake Charmer.
+
+
+The Snake Charmer is drunk, and chooses the Demon. They are immediately
+put back to sleep.
+
+
+Amy is a Townsfolk, and starts the game sitting next to the No Dashii.
+She is then turned into an Outsider by the Pit-Hag. She is still
+poisoned by the No Dashii's ability, because she was poisoned at the
+start of the game.
+
+
+A Pit-Hag turns an alive player into the No Dashii. That player's
+nearest Townsfolk (whether alive or dead) are immediately poisoned.
+
+
+The Dreamer dies by execution. That night, the Pit-Hag attempts to make
+a Dreamer. Nothing happens, since the Dreamer is still in play.
+
+
+The Barber is killed, and a Demon swaps the living No Dashii to another
+alive player. The Townsfolk neighboring the No Dashii's original
+location remain poisoned, and the new neighbors are not poisoned, since
+the No Dashii did not start the game anew.
+
+
+The Barber is killed, and a Demon swaps the dead No Dashii to another
+alive player. The nearest Townsfolk neighbors of the now-alive No Dashii
+are immediately poisoned.
+
+
+A Philosopher chooses to become the Artist. The Pit-Hag attempts to make
+a Philosopher, but nothing happens since the Philosopher is still in
+play.
+
+
+The Pit-Hag turns a player into a Clockmaker. The Clockmaker immediately
+learns how far the Demon is from the nearest Minion.
+
+
+The Dreamer chooses a Savant that has been turned evil by the Skinkulus.
+They are shown the Savant and the Evil Twin, since the Dreamer learns
+one good and one evil character.
+
+
+A Barber dies, and the Demon swaps the Evil Twin and their twin. A new
+good twin is chosen for the new Evil Twin, and the previous association
+is no longer in effect.
+
+
+A good Evil Twin is in play. The Demon is executed, and the game
+continues, since good cannot win. The Barber swaps the Evil Twin and the
+Dreamer. The game continues since there is still an Evil Twin in play.
+
+
+A Pit-Hag has created a second Demon, and the Barber dies. The
+Storyteller lets the evil Demon choose what swap is made.
+
+
+A good Fang Gu targets the Barber. The Fang Gu dies, and the Barber
+becomes an evil Fang Gu; their Barber ability does not trigger.
+
+
+A Pit-Hag makes a Demon, and the Storyteller chooses that the Barber
+dies. The newly made Demon chooses two players to swap.
+
+
+Beth is drunk following the death of the Sweetheart. The Barber dies,
+and the Demon swaps Beth and Joe. Beth is still drunk.

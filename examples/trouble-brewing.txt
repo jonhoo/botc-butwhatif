@@ -1,0 +1,31 @@
+Ben is about to be executed with seven votes. Mina nominates Beth, who
+is dead, for execution. Votes for Beth are tallied, and she also
+receives seven votes. No-one dies that day.
+
+
+The Poisoner poisons themselves. The following night, the Poisoner acts
+again, and their ability functions normally.
+
+
+The Slayer is poisoned, and uses their ability to kill the Demon. The
+Demon does not die. The Slayer may not use their ability again as it is
+only usable once per game.
+
+
+The Virgin is poisoned, and is nominated by a Townsfolk. The Townsfolk
+does not die. The following day, the Virgin is no longer poisoned, and
+is nominated by a Townsfolk again. The nominator does not die, since the
+Virgin's once-per-game ability has been used.
+
+
+On the 1st night, the Storyteller wakes up the Recluse with the other
+Minions, since the Recluse may register as a Minion.
+
+
+The Imp kills themselves at night. The Storyteller makes the Recluse the
+new Imp.
+
+
+The Spy is nominated. The Storyteller chooses that the Spy registers as
+a Virgin, but the nominator does not die, since the Spy does not gain
+the mirrored character's ability.

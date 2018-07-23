@@ -1,0 +1,37 @@
+The Pacifist is executed. The Storyteller chooses that they do not die.
+
+
+A Minion is executed with the Minstrel in play. The Shabaloth wakes, and
+chooses two players. Neither player dies, since the Shabaloth is drunk.
+
+
+The Sailor chooses to drink, and is drunk until the coming Dusk. The
+following night they choose not to drink, and are not drunk.
+
+
+The Pukka targets the Gambler, who is then poisoned. On the following
+night, the Gambler makes an incorrect guess, but does not die. When the
+Pukka acts that night, the Gambler dies.
+
+
+The Pukka targets the Gypsy, who then dies the following night. On the
+subsequent day, the Gypsy learns that they are dead in the morning, and
+selects the Dreamer. That night, the Dreamer dies.
+
+
+The Tea Lady is sitting between a Zombuul and a Townsfolk, and their
+protection is thus not active. The Zombuul's other neighbor is also a
+Townsfolk. The Zombuul is executed, and appears to die. The Tea Lady's
+good neighbor is executed the following day and dies, since the Zombuul
+is still one of the Tea Lady's alive neighbors.
+
+
+The Zombuul is executed for the first time. Their alive token on the
+Town Square is flipped face down, and they are given a dead vote. The
+following day, the Zombuul votes, and their dead vote is flipped. They
+then nominate a player, and vote for that player when votes are tallied.
+
+
+A dead player attempts to nominate to pretend they are the Zombuul. They
+are warned that it is against the rules to nominate when you are dead,
+and the nomination is ignored.
