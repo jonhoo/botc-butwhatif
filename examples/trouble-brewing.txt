@@ -29,3 +29,39 @@ new Imp.
 The Spy is nominated. The Storyteller chooses that the Spy registers as
 a Virgin, but the nominator does not die, since the Spy does not gain
 the mirrored character's ability.
+
+
+The Imp kills themselves while both of their Minions are alive. The
+Storyteller makes the Scarlet Woman the Imp, since the Scarlet Woman
+becomes the Imp when the Imp dies.
+
+
+A Scarlet Woman and a Recluse is in play. The Imp kills themselves. The
+Storyteller makes the Scarlet Woman the Imp, since the Recluse does not
+have the Scarlet Woman's ability.
+
+
+The Washerwoman nominates the Spy. The Storyteller chooses that the Spy
+registers as the Virgin, but the Washerwoman does not die since the Spy
+does not gain the ability of a character it registers as.
+
+
+The Mayor, the Slayer, and the Imp are alive on the last night. The Imp
+targets the Mayor. The Storyteller must end the game; they cannot
+redirect the Demon's attack to a dead player, since the Mayor requires
+that another play dies instead.
+
+
+The Grandmother is made drunk by the Sailor. That night, the Demon kills
+the Grandchild. The Grandmother does not die, as their ability is
+malfunctioning.
+
+
+Mike is killed by the No Dashii at night. Later that night, the
+Chambermaid points to Mike. The Storyteller shakes their head, as the
+Chambermaid must choose an alive player.
+
+
+Tommi was killed by the Shabaloth last night. Tonight, they are
+regurgitated. The Professor then points to Tommi. The Storyteller shakes
+their head, as the Professor must choose a dead player.

@@ -35,3 +35,8 @@ then nominate a player, and vote for that player when votes are tallied.
 A dead player attempts to nominate to pretend they are the Zombuul. They
 are warned that it is against the rules to nominate when you are dead,
 and the nomination is ignored.
+
+
+The Goon is evil, and is then chosen by the Innkeeper and then the No
+Dashii that night. The Goon remains evil, since they are on the team of
+the player who last targeted them.
