@@ -69,6 +69,18 @@ fn main() {
     let mut pages = Vec::new();
     let mut characters = HashMap::new();
 
+    // keep track of all example ids so we can remove any that are no longer present
+    // NOTE: this will sadly also remove examples that have simply been edited...
+    let mut ids: HashSet<i64> = {
+        let mut prep = db.prepare("SELECT id FROM cases").unwrap();
+        let ids = prep
+            .query_map(&[], |row| row.get::<_, i64>(0))
+            .unwrap()
+            .collect::<Result<HashSet<i64>, _>>()
+            .unwrap();
+        ids
+    };
+
     // first, find all characters
     log = log.enter("Searching wiki for characters");
     for edition in &["Trouble_Brewing", "Sects_%26_Violets", "Bad_Moon_Rising"] {
@@ -136,7 +148,9 @@ fn main() {
         .unwrap();
     log = log.leave();
 
-    let mut incorporate_example = |log: &mut cli_agenda::Progress, text: &str| {
+    let mut incorporate_example = |log: &mut cli_agenda::Progress,
+                                   ids: &mut HashSet<i64>,
+                                   text: &str| {
         let text = text.trim();
         let tags: HashSet<_> = all_of_interest
             .captures_iter(&text)
@@ -153,6 +167,7 @@ fn main() {
         let example = match findcase.query_row(&[&text], |row| row.get::<_, i64>(0)) {
             Ok(id) => {
                 log.warn(format!("already exists as {}", id));
+                ids.remove(&id);
                 id
             }
             Err(_) => mkexmpl.insert(&[&text]).unwrap(),
@@ -186,7 +201,7 @@ fn main() {
                         name.push_str(s);
                         name
                     });
-                    incorporate_example(&mut log, &*text);
+                    incorporate_example(&mut log, &mut ids, &*text);
                 })
                 .count();
         }
@@ -202,8 +217,15 @@ fn main() {
                 continue;
             }
 
-            incorporate_example(&mut log, example);
+            incorporate_example(&mut log, &mut ids, example);
         }
         log = log.leave();
+    }
+
+    log = log.enter("tidying up old examples");
+    let mut rmcase = db.prepare("DELETE FROM cases WHERE id = ?").unwrap();
+    for id in ids {
+        log.warn(format!("removing example with id {}", id));
+        rmcase.execute(&[&id]).unwrap();
     }
 }
